@@ -30,16 +30,27 @@ HT1632LEDMatrix matrix = HT1632LEDMatrix(DATA, WR, CS);
 const int yPin = A0;
 const int xPin = A1;
 const int led = 13;  //Lights up during calibration
-float yPosFloat = 8;   //starting x and y positions
-float xPosFloat = 12; 
-int yCurrentPixel = 8;  //starting pixel positions, for reference of change when yPosFloat and xPosFloat are updated and rounded.
-int xCurrentPixel = 12;
+float yPosFloat = 0;   //starting x and y positions
+float xPosFloat = 0; 
+int yCurrentPixel = 0;  //starting pixel positions, for reference of change when yPosFloat and xPosFloat are updated and rounded.
+int xCurrentPixel = 0;
 int yPixel;
 int xPixel;
-const int yWall[] = {0,1,2,3,4,5};
-const int xWall = 12;
+const int yWall_one[] = {0,1,3,4,5,6,7,8};
+const int xWall_one = 3;
+const int yWall_two[] = {3,4,5,6,7,8,9,10,11,12,13,14,15};
+const int xWall_two = 8;
+const int yWall_three = 3;
+const int xWall_three[] = {9,10,11,12,13,14,15,16,17,18};
+const int yWall_four[] = {4,5,6,7,8,9,10,11,12};
+const int xWall_four = 18;
+const int yWall_five[] = {7,8,9,10,11,12,13,14,15};
+const int xWall_five = 12;
+const int yFinishLine = 14;
+const int xFinishLine[] = {9,10,11};
 
 boolean clipping = false;
+boolean success = false;
 boolean xClipping = false;
 boolean calibrated = false;     //Initialize calibration, becomes true after calibration
 
@@ -49,15 +60,38 @@ void setup() {
   pinMode(yPin,INPUT);
   pinMode(xPin, INPUT);
   
+  
   /*
   use to check if Matrix is connected properly
   matrix.fillScreen();
   */
+  /*
+  for(int i = 0; i < (sizeof(yWall_two)/sizeof(int)); i++){
+  Serial.print(yWall_two[i]);
+  Serial.print("\n");
+  }
+  */
+  
   delay(100);
   matrix.clearScreen();
   matrix.setPixel(xCurrentPixel,yCurrentPixel);
-  for(int i = 0; i < sizeof(yWall) - 1; i++){
-   matrix.setPixel(xWall,yWall[i]); 
+  for(int i = 0; i < (sizeof(yWall_one)/sizeof(int)); i++){
+   matrix.setPixel(xWall_one,yWall_one[i]); 
+  }
+  for(int i = 0; i < (sizeof(yWall_two)/sizeof(int)); i++){
+   matrix.setPixel(xWall_two,yWall_two[i]); 
+  }
+  for(int i = 0; i < (sizeof(xWall_three)/sizeof(int)); i++){
+   matrix.setPixel(xWall_three[i],yWall_three); 
+  }
+  for(int i = 0; i < (sizeof(yWall_four)/sizeof(int)); i++){
+   matrix.setPixel(xWall_four,yWall_four[i]); 
+  }
+    for(int i = 0; i < (sizeof(yWall_five)/sizeof(int)); i++){
+   matrix.setPixel(xWall_five,yWall_five[i]); 
+  }
+  for(int i = 0; i < (sizeof(xFinishLine)/sizeof(int)); i++){
+   matrix.setPixel(xFinishLine[i],yFinishLine); 
   }
   matrix.writeScreen();
 }
@@ -118,16 +152,43 @@ void loop() {
     xPixel = xPosFloat;
     
     if  ((yPixel != yCurrentPixel) | (xPixel != xCurrentPixel)) {    //Only updates LED matrix if there's a change in the pixel position
-      for(int i = 0; i < sizeof(yWall); i++){
-        if ((yPixel == yWall[i]) & (xPixel == 12)){
+      for(int i = 0; i < (sizeof(yWall_one)/sizeof(int)); i++){
+        if ((yPixel == yWall_one[i]) & (xPixel == xWall_one)){
           clipping = true;
+        }
+      }
+      for(int i = 0; i < (sizeof(yWall_two)/sizeof(int)); i++){
+        if ((yPixel == yWall_two[i]) & (xPixel == xWall_two)){
+          clipping = true;
+        }
+      }
+      for(int i = 0; i < (sizeof(xWall_three)/sizeof(int)); i++){
+        if ((yPixel == yWall_three) & (xPixel == xWall_three[i])){
+          clipping = true;
+        }
+      }
+      for(int i = 0; i < (sizeof(yWall_four)/sizeof(int)); i++){
+        if ((yPixel == yWall_four[i]) & (xPixel == xWall_four)){
+          clipping = true;
+        }
+      }
+      for(int i = 0; i < (sizeof(yWall_five)/sizeof(int)); i++){
+        if ((yPixel == yWall_five[i]) & (xPixel == xWall_five)){
+          clipping = true;
+        }
+      }
+      for(int i = 0; i < (sizeof(xFinishLine)/sizeof(int)); i++){
+        if ((yPixel == yFinishLine) & (xPixel == xFinishLine[i])){
+          success = true;
         }
       }
       if(clipping){
       death();
       }
+      else if(success){
+       gloriousDeath(); 
+      }
       else{
-      Serial.print("no clipping");
       matrix.clrPixel(xCurrentPixel,yCurrentPixel);
       matrix.setPixel(xPixel,yPixel);
       matrix.writeScreen();
@@ -156,15 +217,36 @@ void death() {
   delay(2000);
   matrix.blink(false);
   matrix.clrPixel(xCurrentPixel,yCurrentPixel);
-  yPosFloat = 8;
-  xPosFloat = 12; 
-  yCurrentPixel = 8;
-  xCurrentPixel = 12;
-  yPixel = 8;
-  xPixel = 12;
+  yPosFloat = 0;
+  xPosFloat = 0; 
+  yCurrentPixel = 0;
+  xCurrentPixel = 0;
+  yPixel = 0;
+  xPixel = 0;
   matrix.setPixel(xCurrentPixel,yCurrentPixel);
   matrix.writeScreen();
   clipping = false;
 }
 
+void gloriousDeath() {
+  matrix.fillScreen();
+  matrix.blink(true);
+  delay(2000);
+  matrix.blink(false);
+  matrix.clearScreen();
+  
+  matrix.setTextSize(1);
+  matrix.setTextColor(1);
+  
+  matrix.setCursor(3,0);
+  matrix.print("YOU");
+  matrix.setCursor(3,8);
+  matrix.print("WIN");
+  matrix.writeScreen();
+  delay(1000);
+  
+  success = false;
+  
+ death(); 
+}
 
