@@ -1,15 +1,17 @@
 /*
 9/27/2017
 This version of Joystick made minor changes for comprehension, such as variable name choice and true/false choice for booleans. 
-Other major changes includeintroduceing a vertical wall and code in the loop method that checks to see if the cursor clips the wall; 
-if it does, the screen blinks, then resets, using a new reset method called "death()"
+Other major changes include introduceing a series of maze walls and code in the loop method that checks to see if the cursor clips the wall; 
+if it does, the screen blinks, then resets, using a new reset method called "death()." If the player can reach the finish line, a new method called
+"gloriousDeath()" plays instead.
 
 
 Previous Version: Joystick_fixFlicker
 Changes from Previous Version:
--New Variables calibrated (replacing n), clipping, xClipping (currently unused, but there for later use), yWall, xWall (for later use)
+-New Variables calibrated (replacing n), clipping, yWall_~, xWall_~
 -improved clarity
--new method, "death()"
+-new methods, "death()", "gloriousDeath()"
+-several added loops and arrays to check for clipping
 
   SETUP:
   -LED Matrix has 4 required wires for single LED matrix use: VCC+5(RED, pin 1), GND(BLK, pin 3), DATA(BLUE, pin 4), Chip Select(WHITE, pin 3), READ/WRITE(YELLOW, pin7)
